@@ -1,5 +1,6 @@
 import ObjectsToCsv from "objects-to-csv";
 import puppeteer, { Page } from "puppeteer";
+import { autoScroll } from "../../utils/scraper";
 
 type ResultScraping = {
   questionsContent: (string | null)[];
@@ -15,25 +16,6 @@ export async function getCsv(res: ResultScraping) {
   }
   const csv = new ObjectsToCsv(arr);
   return csv;
-}
-
-async function autoScroll(page: Page) {
-  await page.evaluate(async () => {
-    await new Promise<void>((resolve) => {
-      let totalHeight = 0;
-      let distance = 100;
-      let timer = setInterval(() => {
-        let scrollHeight = document.body.scrollHeight;
-        window.scrollBy(0, distance);
-        totalHeight += distance;
-        if (totalHeight >= scrollHeight - window.innerHeight) {
-          clearInterval(timer);
-          resolve();
-        }
-      }, 600);
-    });
-    window.scrollTo(0, document.body.scrollHeight);
-  });
 }
 
 async function clickReadMore(page: Page) {
